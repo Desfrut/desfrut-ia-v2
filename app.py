@@ -1,11 +1,13 @@
 from flask import Flask, request, jsonify
 from openai import OpenAI
+import os
 
 app = Flask(__name__)
-client = OpenAI(api_key="SUA_API_KEY_AQUI")
+
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 SYSTEM_PROMPT = """
-Você é uma vendedora Especialista da Loja Desfrut.
+Você é uma vendedora especialista da loja Desfrut.
 
 Seu objetivo é vender de forma natural, elegante e envolvente.
 
@@ -14,14 +16,11 @@ Regras:
 - Sempre faça uma pergunta
 - Sempre tente sugerir produto
 - Linguagem leve e sensual, nunca vulgar
-
-Fluxo:
-1. Entender cliente
-2. Guiar
-3. Sugerir
-4. Estimular
-5. Fechar
 """
+
+@app.route("/")
+def home():
+    return "IA Desfrut online"
 
 @app.route("/perguntar", methods=["POST"])
 def perguntar():
@@ -39,6 +38,3 @@ def perguntar():
     resposta = response.choices[0].message.content
 
     return jsonify({"resposta": resposta})
-
-if __name__ == "__main__":
-    app.run()
